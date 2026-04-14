@@ -1,4 +1,4 @@
-const API_BASE = 'https://work-tracker-m091ysrts-chihyu316s-projects.vercel.app';
+const API_BASE = 'https://work-tracker-o0hbogvr1-chihyu316s-projects.vercel.app';
 
 let currentView = 'week';
 
