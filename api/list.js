@@ -1,4 +1,4 @@
-/* const { Client } = require('@notionhq/client');
+const { Client } = require('@notionhq/client');
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 const DATABASE_ID = process.env.NOTION_DATABASE_ID;
@@ -31,30 +31,4 @@ module.exports = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
-}; */
-
-const { Client } = require('@notionhq/client');
-
-const notion = new Client({ auth: process.env.NOTION_TOKEN });
-const DATABASE_ID = process.env.NOTION_DATABASE_ID;
-
-module.exports = async (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-
-    try {
-        // 先印出環境變數確認有沒有讀到
-        const tokenExists = !!process.env.NOTION_TOKEN;
-        const dbIdExists = !!process.env.NOTION_DATABASE_ID;
-
-        return res.status(200).json({
-            tokenExists,
-            dbIdExists,
-            dbId: DATABASE_ID,
-            notionType: typeof notion.databases,
-            queryType: typeof notion.databases?.query
-        });
-
-    } catch (error) {
-        return res.status(500).json({ error: error.message });
-    }
-};
+}; 
