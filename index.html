@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>每日工作項目記錄與評分系統</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f5f0;
+            color: #1a1a1a;
+            padding: 1.5rem;
+        }
+
+        h1 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e5e5e0;
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 0.75rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            min-width: 130px;
+        }
+
+        label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 7px 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            background: #fafafa;
+            color: #1a1a1a;
+            outline: none;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #888;
+            background: #fff;
+        }
+
+        textarea {
+            height: 60px;
+            resize: vertical;
+        }
+
+        button.primary {
+            background: #1a1a1a;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 18px;
+            font-size: 14px;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        button.primary:hover {
+            opacity: 0.8;
+        }
+
+        .star {
+            font-size: 24px;
+            cursor: pointer;
+            color: #ddd;
+            user-select: none;
+        }
+
+        .star.on {
+            color: #f59e0b;
+        }
+
+        .star-row {
+            display: flex;
+            gap: 2px;
+            margin-top: 4px;
+        }
+
+        .tab-row {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .tab {
+            background: transparent;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 5px 14px;
+            font-size: 13px;
+            cursor: pointer;
+            color: #666;
+            font-family: inherit;
+        }
+
+        .tab.active {
+            background: #e8f0fe;
+            color: #1a56db;
+            border-color: transparent;
+        }
+
+        .msg {
+            font-size: 13px;
+            color: #888;
+            margin-top: 8px;
+        }
+
+        .msg.error {
+            color: #e24b4a;
+        }
+
+        .msg.success {
+            color: #16a34a;
+        }
+
+        /* 報表表格 */
+        .report-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            min-width: 500px;
+            font-size: 13px;
+        }
+
+        th {
+            background: #f0f0eb;
+            padding: 8px 12px;
+            text-align: center;
+            border: 1px solid #e0e0da;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        th.item-col {
+            text-align: left;
+            min-width: 140px;
+        }
+
+        td {
+            padding: 7px 12px;
+            border: 1px solid #e0e0da;
+            text-align: center;
+        }
+
+        td.item-col {
+            text-align: left;
+            font-weight: 500;
+        }
+
+        td.score-0 {
+            color: #bbb;
+        }
+
+        td.score-high {
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        td.score-mid {
+            color: #d97706;
+        }
+
+        td.score-low {
+            color: #e24b4a;
+        }
+
+        tr:hover td {
+            background: #fafaf8;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>📋 每日工作項目記錄與評分系統</h1>
+
+    <!-- 新增記錄表單 -->
+    <div class="card">
+        <h2>新增工作項目</h2>
+        <div class="input-row">
+            <div class="input-group" style="max-width:160px;">
+                <label>日期</label>
+                <input type="date" id="inp-date">
+            </div>
+            <div class="input-group">
+                <label>工作項目名稱</label>
+                <input type="text" id="inp-title" placeholder="例：開會、寫sp、除錯">
+            </div>
+            <div class="input-group" style="max-width:140px;">
+                <label>類型</label>
+                <select id="inp-type">
+                    <option value="規劃/分析">規劃/分析</option>
+                    <option value="Code Review">Code Review</option>
+                    <option value="會議/討論">會議/討論</option>
+                    <option value="除錯/修復">除錯/修復</option>
+                    <option value="其他">其他</option>
+                </select>
+            </div>
+            <div class="input-group" style="max-width:100px;">
+                <label>評分（1-10）</label>
+                <input type="number" id="inp-rating" min="1" max="10" placeholder="8">
+            </div>
+        </div>
+        <div class="input-row">
+            <div class="input-group">
+                <label>備註（可選）</label>
+                <textarea id="inp-note" placeholder="工作內容說明..."></textarea>
+            </div>
+        </div>
+        <button class="primary" onclick="saveRecord()">+ 新增記錄</button>
+        <div id="save-msg" class="msg"></div>
+    </div>
+
+    <!-- 報表 -->
+    <div class="card">
+        <h2>工作報表</h2>
+        <div class="tab-row">
+            <button class="tab active" onclick="setView('week', this)">本週</button>
+            <button class="tab" onclick="setView('month', this)">本月</button>
+            <button class="tab" onclick="setView('all', this)">全部</button>
+        </div>
+        <div class="report-wrap">
+            <div id="report-content">載入中...</div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
